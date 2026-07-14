@@ -18,11 +18,12 @@ def plot_missingness(df):
             (df[column].astype(str).str.strip() == "")
         )
 
-    plt.scatter(
-        np.where(missing)[0],
-        np.full(missing.sum(), y),
-        marker="|"
-    )
+        plt.scatter(
+            np.where(missing)[0],
+            np.full(missing.sum(), y),
+            marker="|"
+        )
+
     plt.yticks(range(len(df.columns)), df.columns)
 
     plt.title("Missingness Plot")
