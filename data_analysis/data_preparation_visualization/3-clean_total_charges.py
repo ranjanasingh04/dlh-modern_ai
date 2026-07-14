@@ -2,7 +2,6 @@
 """
 Dropping vs Replacing vs Imputation
 """
-import pandas as pd
 
 
 def clean_total_charges(df, method='drop'):
