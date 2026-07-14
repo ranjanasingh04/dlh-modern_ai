@@ -8,4 +8,3 @@ non_numeric = [
     val for val in df['TotalCharges'].unique()
     if not str(val).replace('.', '').replace('-', '').isdigit()
 ]
-print("Non-numeric values: ", non_numeric)
