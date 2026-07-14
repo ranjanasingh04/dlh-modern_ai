@@ -3,8 +3,6 @@
 Drop the customerID column from the DataFrame.
 """
 
-import pandas as pd
-
 
 def drop_customerID(df):
     """
