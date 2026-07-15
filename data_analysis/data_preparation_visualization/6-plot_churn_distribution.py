@@ -11,7 +11,7 @@ def plot_churn_distribution(df):
     """
     plt.figure(figsize=(12, 8))
 
-    counts = df["Churn"].value_counts()
+    counts = df["Churn"].value_counts().reindex(["No", "Yes"])
     plt.bar(
         counts.index,
         counts.values,
@@ -21,4 +21,5 @@ def plot_churn_distribution(df):
     plt.xlabel("Churn")
     plt.ylabel("Count")
 
+    plt.tight_layout()
     plt.show
