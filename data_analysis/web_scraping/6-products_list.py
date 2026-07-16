@@ -1,23 +1,21 @@
 #!/usr/bin/env python3
 """
-Scrape products from a static product category page using Selenium.
+Scrape products from a static product page using Selenium.
 """
 
 import time
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 
 
 def scrape_products_list(url):
     """
-    Scrape product information from a static category page.
+    Scrape products from a static category page.
 
     Args:
-        url (str): URL of the product category page.
+        url (str): Product category URL.
 
     Returns:
-        list: Product dictionaries containing title, price,
-        description, and rating.
+        list: List of product dictionaries.
     """
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
@@ -31,36 +29,39 @@ def scrape_products_list(url):
         driver.get(url)
         time.sleep(2)
 
+        by = webdriver.common.by.By
+
         product_blocks = driver.find_elements(
-            By.CSS_SELECTOR,
+            by.CSS_SELECTOR,
             ".thumbnail"
         )
 
         for product in product_blocks:
-            title_element = product.find_element(
-                By.CSS_SELECTOR,
+            title = product.find_element(
+                by.CSS_SELECTOR,
                 "a.title"
             )
-            price_element = product.find_element(
-                By.CSS_SELECTOR,
+
+            price = product.find_element(
+                by.CSS_SELECTOR,
                 "h4.price"
             )
-            description_element = product.find_element(
-                By.CSS_SELECTOR,
+
+            description = product.find_element(
+                by.CSS_SELECTOR,
                 "p.description"
             )
-            rating_element = product.find_element(
-                By.CSS_SELECTOR,
+
+            rating = product.find_element(
+                by.CSS_SELECTOR,
                 ".ratings p[data-rating]"
             )
 
             products.append({
-                "title": title_element.get_attribute("title"),
-                "price": price_element.text.strip(),
-                "description": description_element.text.strip(),
-                "rating": int(
-                    rating_element.get_attribute("data-rating")
-                )
+                "title": title.get_attribute("title"),
+                "price": price.text,
+                "description": description.text,
+                "rating": int(rating.get_attribute("data-rating"))
             })
 
     finally:
