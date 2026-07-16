@@ -24,7 +24,7 @@ def plot_categorical_distributions(df, columns_to_plot=None):
         ]
     else:
         columns_to_plot = list(columns_to_plot)
-    
+
     n_cols = 3
     n_rows = (len(columns_to_plot) + n_cols - 1) // n_cols
 
@@ -50,7 +50,6 @@ def plot_categorical_distributions(df, columns_to_plot=None):
 
     for index in range(len(columns_to_plot), len(axes)):
         axes[index].axis("off")
-
 
     plt.tight_layout()
     plt.savefig("Task_7.png")
