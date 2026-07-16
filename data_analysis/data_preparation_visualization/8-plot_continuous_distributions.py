@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """
+Plot Continuous Distributions
 """
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,6 +9,15 @@ from scipy import stats
 
 def plot_continuous_distributions(df, columns_to_plot=None):
     """
+    Plot a histogram with KDE and a boxplot for continuous columns.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame containing the data to visualize.
+    columns_to_plot : list, optional
+        Continuous numerical columns to plot. If None, all numerical
+        columns are selected.
     """
     if columns_to_plot is None:
         columns_to_plot = df.select_dtypes(
