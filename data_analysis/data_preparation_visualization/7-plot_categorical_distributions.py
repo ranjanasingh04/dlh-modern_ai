@@ -1,56 +1,38 @@
 #!/usr/bin/env python3
 """
-Plots distributions of categorical features.
+Multiple graphs
 """
 import matplotlib.pyplot as plt
 
 
 def plot_categorical_distributions(df, columns_to_plot=None):
     """
-    Visualizes the distributions of categorical columns.
-
-    Args:
-        df: pandas DataFrame containing categorical columns.
-        columns_to_plot: Optional list of categorical columns.
-            When None, all object columns except Churn are plotted.
-
-    Returns:
-        None
+    Plot bar charts for OBJECT data columns
     """
+
     if columns_to_plot is None:
-        columns_to_plot = [
-            column for column in df.select_dtypes(include="object").columns
-            if column != "Churn"
-        ]
-    else:
-        columns_to_plot = list(columns_to_plot)
+        obj_df = df.select_dtypes(include='object')
+        columns_to_plot = obj_df.drop(['Churn'], axis=1)
+        columns_to_plot = columns_to_plot.columns.tolist()
 
-    n_cols = 3
-    n_rows = (len(columns_to_plot) + n_cols - 1) // n_cols
+    grid_width = 3
+    grid_height = (len(columns_to_plot) - 1 + grid_width) // grid_width
 
-    fig, axes = plt.subplots(
-        n_rows,
-        n_cols,
-        figsize=(15, 5 * n_rows)
-    )
-
+    fig, axes = plt.subplots(grid_height,
+                             grid_width,
+                             figsize=(15, 5 * grid_height))
     axes = axes.flatten()
 
-    for index, column in enumerate(columns_to_plot):
-        df[column].value_counts().plot(
-            kind="bar",
-            ax=axes[index]
-        )
+    for i, col in enumerate(columns_to_plot):
+        counts = df[col].value_counts()
 
-        axes[index].set_title(column)
-        axes[index].tick_params(
-            axis="x",
-            rotation=45
-        )
+        axes[i].bar(counts.index, counts.values)
+        axes[i].set_title(col)
 
-    for index in range(len(columns_to_plot), len(axes)):
-        axes[index].axis("off")
+        axes[i].tick_params(axis='x', rotation=45)
+
+    for j in range(len(columns_to_plot), len(axes)):
+        fig.delaxes(axes[j])
 
     plt.tight_layout()
-    plt.savefig("Task_7.png")
     plt.show()
