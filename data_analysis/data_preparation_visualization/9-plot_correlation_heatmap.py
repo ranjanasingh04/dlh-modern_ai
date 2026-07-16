@@ -21,11 +21,14 @@ def plot_correlation_heatmap(df):
     correlation_matrix = df[continuous_columns].corr()
 
     sns.heatmap(
-        correlation_matrix,
+        corr,
         annot=True,
+        fmt=".2g",
         cmap="coolwarm",
         vmin=-1,
-        vmax=1
+        vmax=1,
+        square=True,
+        linewidths=0.5
     )
 
     plt.title("Correlation Matrix")
