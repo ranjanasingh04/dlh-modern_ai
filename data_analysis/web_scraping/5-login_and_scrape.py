@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Log in to quotes.toscrape.com and scrape quotes after authentication.
+Log in to a website and scrape authenticated quote data.
 """
 
 import requests
@@ -9,53 +9,51 @@ from bs4 import BeautifulSoup
 
 def login_and_scrape(login_url, user, pwd):
     """
-    Log in to the website and scrape quotes from the protected page.
+    Log in and scrape quotes visible after authentication.
 
     Args:
         login_url (str): URL of the login page.
-        user (str): Username used for authentication.
-        pwd (str): Password used for authentication.
+        user (str): Login username.
+        pwd (str): Login password.
 
     Returns:
-        list: Quote dictionaries containing text, author, and tags.
+        list: A list of dictionaries containing quote information.
     """
     session = requests.Session()
 
-    login_response = session.get(login_url)
-    login_response.raise_for_status()
+    response = session.get(login_url)
+    response.raise_for_status()
 
-    soup = BeautifulSoup(login_response.text, "html.parser")
-    csrf_input = soup.find("input", attrs={"name": "csrf_token"})
+    soup = BeautifulSoup(response.text, "html.parser")
 
-    if csrf_input is None or not csrf_input.get("value"):
-        raise ValueError("CSRF token not found")
+    csrf_token = soup.find(
+        "input",
+        attrs={"name": "csrf_token"}
+    )["value"]
 
-    csrf_token = csrf_input.get("value")
-
-    credentials = {
+    login_data = {
         "username": user,
         "password": pwd,
         "csrf_token": csrf_token
     }
 
-    login_response = session.post(login_url, data=credentials)
-    login_response.raise_for_status()
+    response = session.post(login_url, data=login_data)
+    response.raise_for_status()
 
-    protected_url = "https://quotes.toscrape.com/"
-    quotes_response = session.get(protected_url)
-    quotes_response.raise_for_status()
+    response = session.get("https://quotes.toscrape.com/")
+    response.raise_for_status()
 
-    soup = BeautifulSoup(quotes_response.text, "html.parser")
+    soup = BeautifulSoup(response.text, "html.parser")
     quotes = []
 
     for quote_block in soup.find_all("div", class_="quote"):
-        text_element = quote_block.find("span", class_="text")
-        author_element = quote_block.find("small", class_="author")
+        text = quote_block.find("span", class_="text")
+        author = quote_block.find("small", class_="author")
         tag_elements = quote_block.find_all("a", class_="tag")
 
         quotes.append({
-            "text": text_element.get_text(strip=True),
-            "author": author_element.get_text(strip=True),
+            "text": text.get_text(strip=True),
+            "author": author.get_text(strip=True),
             "tags": [
                 tag.get_text(strip=True)
                 for tag in tag_elements
