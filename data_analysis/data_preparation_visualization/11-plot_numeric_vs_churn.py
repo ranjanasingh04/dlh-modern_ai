@@ -22,4 +22,3 @@ def plot_numeric_vs_churn(df, col):
     plt.legend(title='Churn')
 
     plt.show()
-    
