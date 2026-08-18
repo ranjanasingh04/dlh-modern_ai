@@ -1,51 +1,49 @@
 #!/usr/bin/env python3
 import time
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
 
 def scrape_products_list(url):
     """
-    Scrapes a static product category page and returns a list of dictionaries.
-    Each dictionary contains the title, price, description, and rating.
+    Scrapes a static product category page using only allowed imports.
     """
-    # Set up Chrome options for headless mode
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--window-size=1920,1080")
-    chrome_options.add_argument("--no-sandbox")
+    # Initialize options directly from the webdriver module
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless")
+    options.add_argument("--window-size=1920,1080")
+    options.add_argument("--no-sandbox")
 
     # Initialize the driver
-    driver = webdriver.Chrome(options=chrome_options)
+    driver = webdriver.Chrome(options=options)
     
     products = []
 
     try:
         driver.get(url)
-        # Brief pause to ensure the page is fully loaded
+        # Allow time for the static page to render
         time.sleep(1)
 
-        # Locate all product containers (the class used is 'thumbnail')
-        product_elements = driver.find_elements(By.CLASS_NAME, "thumbnail")
+        # We use string literals for the locator strategy to avoid importing 'By'
+        # mechanisms: "class name", "tag name", "css selector"
+        product_elements = driver.find_elements("class name", "thumbnail")
 
         for element in product_elements:
-            # 1. Title: title attribute of the <a> tag
-            # Note: We find the <a> tag inside the h4 or directly in the caption
-            title_link = element.find_element(By.TAG_NAME, "a")
+            # 1. Title: from the 'title' attribute of the <a> tag
+            title_link = element.find_element("tag name", "a")
             title = title_link.get_attribute("title")
 
             # 2. Price: text of <h4 class="price">
-            price = element.find_element(By.CLASS_NAME, "price").text
+            price = element.find_element("class name", "price").text
 
             # 3. Description: text of <p class="description">
-            description = element.find_element(By.CLASS_NAME, "description").text
+            description = element.find_element("class name", "description").text
 
-            # 4. Rating: 'data-rating' attribute value of <p> under .ratings
-            # CSS Selector selects a <p> that has the attribute data-rating inside .ratings
-            rating_elem = element.find_element(By.CSS_SELECTOR, ".ratings p[data-rating]")
+            # 4. Rating: 'data-rating' attribute from the p tag inside .ratings
+            rating_elem = element.find_element(
+                "css selector", ".ratings p[data-rating]"
+            )
             rating_value = int(rating_elem.get_attribute("data-rating"))
 
-            # Build the dictionary
+            # Append product dictionary to the list
             products.append({
                 "title": title,
                 "price": price,
@@ -54,10 +52,9 @@ def scrape_products_list(url):
             })
 
     except Exception as e:
-        # Proper error handling ensures driver quits even if a specific element fails
         raise e
     finally:
+        # Ensure the browser process is closed
         driver.quit()
 
     return products
-    
