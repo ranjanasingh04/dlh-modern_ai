@@ -72,4 +72,3 @@ def scroll_and_scrape(url, scroll_pause=2.0):
         })
 
     return products
-    
