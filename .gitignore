@@ -1,1 +1,70 @@
+# Python compiled files
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+
+# Python environments
+.venv/
+venv/
+env/
+ENV/
+.conda/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Testing and tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# VS Code and IDE-specific files
+.vscode/
+.idea/
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Logs
+*.log
+
+# Downloaded archives
+*.zip
+*.tar
+*.tar.gz
+*.tgz
 *.rar
+
+# Computer Vision datasets
+/deep_learning/cv_apps/datasets/detection/images/
+/deep_learning/cv_apps/datasets/detection/labels/
+/deep_learning/cv_apps/datasets/segmentation/
+
+# Machine-learning model files
+*.pt
+*.pth
+*.onnx
+*.h5
+*.keras
+
+# YOLO and training output
+runs/
+wandb/
+mlruns/
+
+# Temporary files
+*.tmp
+*.temp
+~$*
