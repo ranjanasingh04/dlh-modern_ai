@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 """Provide basic Albumentations augmentation for object detection."""
 

@@ -19,8 +19,8 @@ def visualize_boxes(image, boxes, labels=None, title="Image"):
     plt.show()
 
 
-image_path = "datasets/detection/images/train/000001.jpg"
-label_path = "datasets/detection/labels/train/000001.txt"
+image_path = "datasets/detection/images/train/2007_000032.jpg"
+label_path = "datasets/detection/labels/train/2007_000032.txt"
 
 image = cv2.imread(image_path)
 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
