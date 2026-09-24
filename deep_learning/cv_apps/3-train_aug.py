@@ -1,103 +1,69 @@
 #!/usr/bin/env python3
 """Train an Ultralytics YOLO model with configurable augmentation."""
 
-import os
-from typing import Any, Dict, List, Optional, Tuple, Union
-
 from ultralytics import YOLO
 
 
-def train_with_augmentation(
-    data: Optional[str] = None,
-    model_path: str = "yolov8n.pt",
-    epochs: int = 50,
-    imgsz: Union[int, Tuple[int, int]] = 640,
-    batch: int = 16,
-    augmentation: bool = True,
-    yolo_aug_params: Optional[Dict[str, Any]] = None,
-    albumentations_transforms: Optional[List[Any]] = None,
-    save: bool = True,
-    plots: bool = True,
-    verbose: bool = True,
-    data_yaml: Optional[str] = None,
-    model: Optional[str] = None,
-    aug: Optional[Any] = None,
-    custom_albu: Optional[List[Any]] = None,
-):
-    """Train a YOLO model with native or custom augmentation.
+def train_with_augmentation(data, model_path="yolov8n.pt", epochs=100,
+                            imgsz=640, batch=16, augmentation=False,
+                            yolo_aug_params=None,
+                            albumentations_transforms=None,
+                            save=False, plots=False, verbose=False):
+    """Train a YOLO model with optional augmentation configuration.
 
     Args:
-        data: Path to the YOLO dataset YAML file.
-        model_path: Path to pretrained weights or a model configuration.
-        epochs: Number of training epochs.
-        imgsz: Training image size as an integer or height-width tuple.
-        batch: Number of images in each training batch.
-        augmentation: Whether data augmentation is enabled.
-        yolo_aug_params: YOLO-native augmentation parameters.
-        albumentations_transforms: Custom Albumentations transforms.
-        save: Whether model checkpoints should be saved.
-        plots: Whether training and validation plots should be created.
-        verbose: Whether detailed training output should be displayed.
-        data_yaml: Alternative name for the dataset YAML path.
-        model: Alternative name for the model path.
-        aug: Alternative native-augmentation configuration.
-        custom_albu: Alternative custom Albumentations transform list.
+        data (str): Path to the YOLO dataset configuration file.
+        model_path (str): Model weights or configuration file.
+        epochs (int): Number of training epochs.
+        imgsz (int or tuple): Training image dimensions.
+        batch (int): Number of images in each batch.
+        augmentation (bool): Whether default augmentation is enabled.
+        yolo_aug_params (dict): Custom native YOLO augmentation values.
+        albumentations_transforms (list): Custom Albumentations transforms.
+        save (bool): Whether to save model checkpoints.
+        plots (bool): Whether to generate training plots.
+        verbose (bool): Whether to show detailed training output.
 
     Returns:
-        A tuple containing the trained YOLO model and training results.
-
-    Raises:
-        ValueError: If a dataset YAML path is not supplied.
-        TypeError: If yolo_aug_params is not a dictionary.
+        tuple: The trained YOLO model and complete training results.
     """
-    if data is None:
-        data = data_yaml
+    model = YOLO(model_path)
 
-    if data is None:
-        raise ValueError("A dataset YAML path must be provided.")
-
-    if model is not None:
-        model_path = model
-
-    if custom_albu is not None:
-        albumentations_transforms = custom_albu
-
-    if isinstance(aug, bool):
-        augmentation = aug
-    elif isinstance(aug, dict):
-        yolo_aug_params = aug
-    elif aug is not None:
-        raise TypeError("aug must be a boolean, dictionary, or None.")
-
-    if (
-        yolo_aug_params is not None
-        and not isinstance(yolo_aug_params, dict)
-    ):
-        raise TypeError("yolo_aug_params must be a dictionary or None.")
-
-    training_arguments = {
+    train_params = {
         "data": data,
         "epochs": epochs,
         "imgsz": imgsz,
         "batch": batch,
-        "augment": augmentation,
         "save": save,
         "plots": plots,
         "verbose": verbose,
     }
 
-    if yolo_aug_params:
-        training_arguments.update(yolo_aug_params)
-
     if albumentations_transforms is not None:
-        training_arguments["augmentations"] = (
-            albumentations_transforms
-        )
+        train_params["augmentations"] = albumentations_transforms
+    elif yolo_aug_params is not None:
+        train_params.update(yolo_aug_params)
+    elif not augmentation:
+        train_params.update({
+            "hsv_h": 0.0,
+            "hsv_s": 0.0,
+            "hsv_v": 0.0,
+            "degrees": 0.0,
+            "translate": 0.0,
+            "scale": 0.0,
+            "shear": 0.0,
+            "perspective": 0.0,
+            "flipud": 0.0,
+            "fliplr": 0.0,
+            "bgr": 0.0,
+            "mosaic": 0.0,
+            "mixup": 0.0,
+            "cutmix": 0.0,
+            "copy_paste": 0.0,
+            "auto_augment": None,
+            "erasing": 0.0,
+        })
 
-    if os.name == "nt":
-        training_arguments["workers"] = 0
+    results = model.train(**train_params)
 
-    yolo_model = YOLO(model_path)
-    results = yolo_model.train(**training_arguments)
-
-    return yolo_model, results
+    return model, results
