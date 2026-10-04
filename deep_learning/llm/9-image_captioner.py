@@ -2,14 +2,15 @@
 """Generate image captions using a pretrained BLIP model."""
 
 import torch
-import PIL 
+import PIL
 import transformers
 
 
 def image_captioner(model, image_path, max_new_tokens):
     """Return a caption for the image using the specified BLIP model."""
     processor = transformers.BlipProcessor.from_pretrained(model)
-    caption_model = transformers.BlipForConditionalGeneration.from_pretrained(model)
+    caption_model = transformers.BlipForConditionalGeneration.from_pretrained(
+        model)
     caption_model.eval()
 
     with PIL.Image.open(image_path) as image:
