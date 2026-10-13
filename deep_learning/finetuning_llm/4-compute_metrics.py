@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+"""Compute evaluation metrics for a classification model."""
 import numpy as np
 import sklearn.metrics
 
