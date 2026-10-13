@@ -13,6 +13,9 @@ ENV/
 
 # Jupyter
 .ipynb_checkpoints/
+hbtn_emotion_classifier/
+hbtn_emotion_classifier_best_model/
+DistilBERT_Emotion_VSCode.ipynb
 
 # Testing and tool caches
 .pytest_cache/
@@ -54,6 +57,7 @@ desktop.ini
 
 # Machine-learning model files
 *.pt
+!deep_learning/cv_apps/best_model.pt
 *.pth
 *.onnx
 *.h5
