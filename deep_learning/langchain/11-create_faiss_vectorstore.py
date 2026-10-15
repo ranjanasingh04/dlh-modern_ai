@@ -8,7 +8,7 @@ def create_faiss_vectorstore(
     docs, embedding_model, k, search_type="similarity"
 ):
     """Return a FAISS vector store and its configured retriever."""
-    vectorstores = FAISS.from_documents(
+    vectorstoresloc = vectorstores.FAISS.from_documents(
         documents=docs,
         embedding=embedding_model,
     )
@@ -18,4 +18,4 @@ def create_faiss_vectorstore(
         search_kwargs={"k": k},
     )
 
-    return vectorstores, retriever
+    return vectorstoresloc, retriever
