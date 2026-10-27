@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """Build a shallow neural network for multi-class classification."""
 
-from keras import Sequential, Input
-from keras.layers import Dense
+from tensorflow import keras
+from tensorflow.keras import layers
 
 
 def build_model(input_dim, neurons_h):
     """Return a model with one sigmoid hidden layer and softmax output."""
-    model = Sequential([
-        Input(shape=(input_dim,)),
-        Dense(neurons_h, activation="sigmoid"),
-        Dense(3, activation="softmax"),
+    model = keras.Sequential([
+        layers.Dense(neurons_h, activation='sigmoid',
+                     input_shape=(input_dim,)),
+        layers.Dense(10, activation='softmax')
     ])
     return model
