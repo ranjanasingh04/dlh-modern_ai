@@ -6,4 +6,5 @@ from langchain_huggingface import HuggingFaceEmbeddings
 
 def create_embeddings(model_name):
     """Return a HuggingFaceEmbeddings instance for the specified model."""
-    return HuggingFaceEmbeddings(model_name=model_name)
+    embeddings = HuggingFaceEmbeddings(model_name=model_name)
+    return embeddings
