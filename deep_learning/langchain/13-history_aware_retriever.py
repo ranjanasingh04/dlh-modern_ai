@@ -7,15 +7,15 @@ from langchain import chains
 
 def build_history_aware_retriever(llm, retriever, human_message):
     """Return a query prompt and a history-aware retriever."""
-    prompt = ChatPromptTemplate.from_messages([
-        MessagesPlaceholder(variable_name="chat_history"),
+    prompt = prompts.ChatPromptTemplate.from_messages([
+        prompts.MessagesPlaceholder(variable_name="chat_history"),
         ("human", human_message),
     ])
 
-    history_aware_retriever = create_history_aware_retriever(
-        llm,
-        retriever,
-        prompt,
+    history_retriever = chains.create_history_aware_retriever(
+        llm=llm,
+        retriever=retriever,
+        prompt=prompt,
     )
 
-    return prompt, history_aware_retriever
+    return prompt, history_retriever
